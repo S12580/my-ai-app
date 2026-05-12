@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.app.chat.mapper.ChatMessageMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO chat_message (session_id, role, content, meta_json)
+        VALUES (#{sessionId}, #{role}, #{content}, #{metaJson})
+    </insert>
+
+    <select id="findBySessionIdAsc" resultType="ChatMessage">
+        SELECT id, session_id AS sessionId, role, content, meta_json AS metaJson, created_at AS createdAt
+        FROM chat_message
+        WHERE session_id = #{sessionId}
+        ORDER BY created_at ASC, id ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findBySessionIdAscBefore" resultType="ChatMessage">
+        SELECT id, session_id AS sessionId, role, content, meta_json AS metaJson, created_at AS createdAt
+        FROM chat_message
+        WHERE session_id = #{sessionId}
+        <if test="beforeId != null">
+            AND id &lt; #{beforeId}
+        </if>
+        ORDER BY created_at DESC, id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findById" resultType="ChatMessage">
+        SELECT id, session_id AS sessionId, role, content, meta_json AS metaJson, created_at AS createdAt
+        FROM chat_message WHERE id = #{id}
+    </select>
+
+    <delete id="deleteBySessionId">
+        DELETE FROM chat_message WHERE session_id = #{sessionId}
+    </delete>
+
+    <delete id="deleteByIdAndSessionId">
+        DELETE FROM chat_message WHERE id = #{id} AND session_id = #{sessionId}
+    </delete>
+</mapper>

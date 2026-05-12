@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.app.chat.mapper.ChatSessionMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO chat_session (title, model)
+        VALUES (#{title}, #{model})
+    </insert>
+
+    <update id="updateTitle">
+        UPDATE chat_session SET title = #{title}, updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <update id="touchUpdatedAt">
+        UPDATE chat_session SET updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM chat_session WHERE id = #{id}
+    </delete>
+
+    <select id="findById" resultType="ChatSession">
+        SELECT id, title, model, created_at AS createdAt, updated_at AS updatedAt
+        FROM chat_session WHERE id = #{id}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM chat_session
+    </select>
+
+    <select id="findPage" resultType="ChatSession">
+        SELECT id, title, model, created_at AS createdAt, updated_at AS updatedAt
+        FROM chat_session
+        ORDER BY updated_at DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+</mapper>

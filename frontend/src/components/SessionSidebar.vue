@@ -183,7 +183,7 @@ onBeforeUnmount(() => {
 }
 .item-title {
   display: block;
-  font-size: 14px;
+  font-size: var(--app-font-size, 14px);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -254,7 +254,7 @@ onBeforeUnmount(() => {
   color: #f87171;
 }
 .item-time {
-  font-size: 11px;
+  font-size: calc(var(--app-font-size, 14px) - 4px);
   color: var(--theme-text-muted);
   margin-top: 4px;
   display: block;

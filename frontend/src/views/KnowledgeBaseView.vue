@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import * as api from '../api/chat'
@@ -235,7 +235,7 @@ async function onDelete(id: number, name: string) {
   background: transparent;
   color: var(--theme-text);
   padding: 24px 20px 48px;
-  font-family: system-ui, sans-serif;
+  font-family: var(--app-font-family);
 }
 @media (min-width: 900px) {
   .kb-page {
@@ -593,3 +593,4 @@ async function onDelete(id: number, name: string) {
   cursor: not-allowed;
 }
 </style>
+

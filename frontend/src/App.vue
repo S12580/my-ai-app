@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import ThemeSettings from './components/ThemeSettings.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
@@ -7,7 +7,7 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
 <template>
   <div class="app-root">
     <nav class="app-nav">
-      <RouterLink class="nav-link" to="/">聊天</RouterLink>
+      <RouterLink class="nav-link" to="/">鑱婂ぉ</RouterLink>
       <RouterLink class="nav-link" to="/knowledge">知识库管理</RouterLink>
     </nav>
     <RouterView />
@@ -30,7 +30,7 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
   border-bottom: 1px solid var(--theme-border);
   backdrop-filter: var(--theme-blur);
   -webkit-backdrop-filter: var(--theme-blur);
-  font-family: system-ui, sans-serif;
+  font-family: var(--app-font-family);
 }
 .nav-link {
   color: var(--theme-text-muted);
@@ -53,3 +53,4 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
   box-shadow: 0 0 0 1px var(--theme-accent-glow);
 }
 </style>
+

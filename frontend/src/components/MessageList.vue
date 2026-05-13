@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, computed } from 'vue'
 import { useChatStore } from '../stores/chat'
 import { useConfirmStore } from '../stores/confirm'
 import { chatAttachmentFileUrl, type Message } from '../api/chat'
@@ -11,6 +11,7 @@ const bottom = ref<HTMLElement | null>(null)
 
 const imagePreviewUrl = ref<string | null>(null)
 const imagePreviewCaption = ref('')
+const CHAT_TIME_SEPARATOR_GAP_MS = 5 * 60 * 1000
 
 function openImagePreview(url: string, caption: string) {
   imagePreviewUrl.value = url
@@ -107,6 +108,45 @@ function visibleUserText(m: Message): string {
   return userBubbleVisibleText(m.content)
 }
 
+function bubbleTimeText(raw: string | null | undefined): string {
+  const t = (raw ?? '').trim()
+  if (!t) return ''
+  if (t.includes('T')) return t.slice(0, 16).replace('T', ' ')
+  return t
+}
+
+type MessageRenderItem =
+  | { kind: 'time'; key: string; text: string }
+  | { kind: 'message'; key: string; message: Message }
+
+const renderItems = computed<MessageRenderItem[]>(() => {
+  const out: MessageRenderItem[] = []
+  let prevTs: number | null = null
+  chat.messages.forEach((m, idx) => {
+    const ts = Date.parse(m.createdAt ?? '')
+    const validTs = Number.isFinite(ts) ? ts : null
+    if (
+      validTs != null &&
+      (prevTs == null || validTs - prevTs >= CHAT_TIME_SEPARATOR_GAP_MS)
+    ) {
+      out.push({
+        kind: 'time',
+        key: `t-${m.id}-${idx}-${validTs}`,
+        text: bubbleTimeText(m.createdAt),
+      })
+      prevTs = validTs
+    } else if (validTs != null) {
+      prevTs = validTs
+    }
+    out.push({
+      kind: 'message',
+      key: `m-${m.id}-${idx}-${m.role}`,
+      message: m,
+    })
+  })
+  return out
+})
+
 watch(
   () =>
     chat.messages.length +
@@ -155,94 +195,113 @@ async function onCopyMessage(m: Message) {
   <div class="messages">
     <div v-if="!chat.currentSessionId" class="empty">请选择或新建会话</div>
     <template v-else>
-      <div
-        v-for="m in chat.messages"
-        :key="m.id + '-' + m.role"
-        :class="['bubble', m.role]"
-      >
-        <div class="bubble-head">
-          <div v-if="m.role !== 'user'" class="role">AI 助手</div>
+      <template v-for="item in renderItems" :key="item.key">
+        <div v-if="item.kind === 'time'" class="chat-time-divider">
+          <span>{{ item.text }}</span>
+        </div>
+        <div
+          v-else
+          :class="['msg-row', item.message.role]"
+        >
+        <div :class="['msg-meta', item.message.role]">
+          <template v-if="item.message.role !== 'user'">
+            <div class="role">AI 助手</div>
+            <div v-if="bubbleTimeText(item.message.createdAt)" class="bubble-time-inline">
+              {{ bubbleTimeText(item.message.createdAt) }}
+            </div>
+          </template>
+          <div
+            v-else-if="bubbleTimeText(item.message.createdAt)"
+            class="bubble-time-inline"
+          >
+            {{ bubbleTimeText(item.message.createdAt) }}
+          </div>
+        </div>
+        <div :class="['bubble', item.message.role]">
+          <div class="bubble-head">
           <div class="menu-wrap">
             <button type="button" class="menu-btn" @click.stop>⋯</button>
             <div class="menu" @click.stop>
-              <button type="button" class="menu-item" @click.stop="onCopyMessage(m)">复制</button>
-              <button type="button" class="menu-item danger" @click.stop="onDeleteMessage(m.id)">删除</button>
+              <button type="button" class="menu-item" @click.stop="onCopyMessage(item.message)">复制</button>
+              <button type="button" class="menu-item danger" @click.stop="onDeleteMessage(item.message.id)">删除</button>
             </div>
           </div>
-        </div>
-        <div
-          v-if="m.role === 'user' && userAttachmentRows(m).length"
-          class="attach-previews"
-        >
+          </div>
           <div
-            v-for="(row, idx) in userAttachmentRows(m)"
-            :key="idx + '-' + row.fileName"
-            class="attach-item"
+            v-if="item.message.role === 'user' && userAttachmentRows(item.message).length"
+            class="attach-previews"
           >
-            <div class="attach-meta-row">
-              <span class="attach-kind-icon" aria-hidden="true">
-                <svg
-                  v-if="row.isImage"
-                  class="attach-kind-svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <svg
-                  v-else
-                  class="attach-kind-svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </span>
-              <span class="attach-name" :title="row.fileName">{{ row.fileName }}</span>
-              <a
-                v-if="row.fileUrl"
-                class="attach-download"
-                :href="row.fileUrl"
-                :download="row.fileName"
-                target="_blank"
-                rel="noopener noreferrer"
-                :title="'下载 ' + row.fileName"
-                @click.stop
-              >下载</a>
-            </div>
-            <button
-              v-if="row.isImage && row.previewUrl"
-              type="button"
-              class="thumb-wrap"
-              :title="'点击预览：' + row.fileName"
-              @click="openImagePreview(row.previewUrl!, row.fileName)"
+            <div
+              v-for="(row, idx) in userAttachmentRows(item.message)"
+              :key="idx + '-' + row.fileName"
+              class="attach-item"
             >
-              <img :src="row.previewUrl" class="thumb" alt="" />
-            </button>
+              <div class="attach-meta-row">
+                <span class="attach-kind-icon" aria-hidden="true">
+                  <svg
+                    v-if="row.isImage"
+                    class="attach-kind-svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <svg
+                    v-else
+                    class="attach-kind-svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span class="attach-name" :title="row.fileName">{{ row.fileName }}</span>
+                <a
+                  v-if="row.fileUrl"
+                  class="attach-download"
+                  :href="row.fileUrl"
+                  :download="row.fileName"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  :title="'下载 ' + row.fileName"
+                  @click.stop
+                >下载</a>
+              </div>
+              <button
+                v-if="row.isImage && row.previewUrl"
+                type="button"
+                class="thumb-wrap"
+                :title="'点击预览：' + row.fileName"
+                @click="openImagePreview(row.previewUrl!, row.fileName)"
+              >
+                <img :src="row.previewUrl" class="thumb" alt="" />
+              </button>
+            </div>
           </div>
-        </div>
-        <div v-if="m.role !== 'user' || visibleUserText(m)" class="text">
-          {{ m.role === 'user' ? visibleUserText(m) : m.content }}
+          <div v-if="item.message.role !== 'user' || visibleUserText(item.message)" class="text">
+            {{ item.message.role === 'user' ? visibleUserText(item.message) : item.message.content }}
+          </div>
         </div>
       </div>
+      </template>
       <div ref="bottom" />
     </template>
     <Teleport to="body">
@@ -278,26 +337,71 @@ async function onCopyMessage(m: Message) {
   flex-direction: column;
   gap: 14px;
 }
+.chat-time-divider {
+  display: flex;
+  justify-content: center;
+  margin: 2px 0;
+}
+.chat-time-divider > span {
+  font-size: 11px;
+  color: var(--theme-text-muted);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-text) 8%, transparent);
+}
 .empty {
   margin: auto;
   color: var(--theme-text-muted);
   font-size: 14px;
 }
-.bubble {
+.msg-row {
   max-width: min(720px, 92%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.msg-row.user {
+  align-self: flex-end;
+}
+.msg-row.assistant {
+  align-self: flex-start;
+}
+.msg-meta {
+  min-height: 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.msg-meta.user {
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+.msg-meta.assistant {
+  justify-content: flex-start;
+  padding-left: 6px;
+}
+.bubble-time-inline {
+  font-size: 11px;
+  color: var(--theme-text-muted);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+.msg-row:hover .bubble-time-inline {
+  opacity: 1;
+}
+.bubble {
   padding: 12px 14px;
   border-radius: var(--theme-radius);
   line-height: 1.55;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
 }
 .bubble.user {
-  align-self: flex-end;
   background: var(--theme-user-bubble);
   color: #f8fafc;
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .bubble.assistant {
-  align-self: flex-start;
   background: var(--theme-assistant-bubble);
   border: 1px solid var(--theme-border-strong);
   color: var(--theme-text);
@@ -307,16 +411,19 @@ async function onCopyMessage(m: Message) {
 .role {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--theme-accent) 24%, transparent);
-  color: color-mix(in srgb, var(--theme-text) 88%, var(--theme-accent) 12%);
-  margin-bottom: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: color-mix(in srgb, var(--theme-accent) 72%, var(--theme-text) 28%);
+  margin-bottom: 0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.msg-meta.assistant .bubble-time-inline {
+  margin-left: 8px;
 }
 .attach-previews {
   display: flex;
@@ -512,6 +619,7 @@ async function onCopyMessage(m: Message) {
   color: #f87171;
 }
 .text {
+  font-size: var(--app-font-size, 14px);
   white-space: pre-wrap;
   word-break: break-word;
   font-family:

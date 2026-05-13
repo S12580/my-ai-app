@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { onMounted } from 'vue'
 import { useChatStore } from '../stores/chat'
 import SessionSidebar from '../components/SessionSidebar.vue'
@@ -47,7 +47,7 @@ onMounted(async () => {
   height: calc(100vh - var(--theme-nav-h));
   background: transparent;
   color: var(--theme-text);
-  font-family: system-ui, sans-serif;
+  font-family: var(--app-font-family);
 }
 .main {
   flex: 1;
@@ -123,3 +123,4 @@ onMounted(async () => {
   gap: 16px;
 }
 </style>
+

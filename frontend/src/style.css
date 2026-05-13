@@ -22,7 +22,7 @@
   --theme-surface-glass-heavy: rgba(15, 23, 42, 0.78);
   --theme-surface-card: rgba(30, 41, 59, 0.55);
   --theme-surface-card-solid: rgba(30, 41, 59, 0.9);
-  --theme-user-bubble: linear-gradient(135deg, #0369a1 0%, #4f46e5 55%, #6366f1 100%);
+  --theme-user-bubble: #3b82f6;
   --theme-assistant-bubble: rgba(30, 41, 59, 0.82);
   --theme-blur: saturate(140%) blur(18px);
   --theme-radius: 14px;
@@ -54,6 +54,8 @@
   --kb-status-unknown-bg: rgba(148, 163, 184, 0.12);
   --kb-status-unknown-fg: #cbd5e1;
   --kb-status-unknown-border: rgba(148, 163, 184, 0.35);
+  --app-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --app-font-size: 14px;
 }
 
 html[data-theme='ember'] {
@@ -74,7 +76,7 @@ html[data-theme='ember'] {
   --theme-surface-glass-heavy: rgba(50, 26, 30, 0.8);
   --theme-surface-card: rgba(62, 32, 38, 0.58);
   --theme-surface-card-solid: rgba(48, 26, 30, 0.94);
-  --theme-user-bubble: linear-gradient(135deg, #9a3412 0%, #9f1239 55%, #db2777 100%);
+  --theme-user-bubble: #c2410c;
   --theme-assistant-bubble: rgba(58, 30, 36, 0.88);
   --theme-blur: saturate(125%) blur(18px);
   --theme-app-nav-bg: rgba(20, 10, 12, 0.82);
@@ -111,7 +113,7 @@ html[data-theme='forest'] {
   --theme-surface-glass-heavy: rgba(10, 48, 40, 0.82);
   --theme-surface-card: rgba(15, 55, 46, 0.55);
   --theme-surface-card-solid: rgba(12, 52, 44, 0.92);
-  --theme-user-bubble: linear-gradient(135deg, #047857 0%, #0f766e 45%, #0d9488 100%);
+  --theme-user-bubble: #0f766e;
   --theme-assistant-bubble: rgba(15, 55, 46, 0.85);
   --theme-blur: saturate(135%) blur(18px);
   --theme-app-nav-bg: rgba(6, 22, 18, 0.78);
@@ -148,7 +150,7 @@ html[data-theme='midnight'] {
   --theme-surface-glass-heavy: rgba(24, 24, 27, 0.88);
   --theme-surface-card: rgba(39, 39, 42, 0.72);
   --theme-surface-card-solid: rgba(39, 39, 42, 0.95);
-  --theme-user-bubble: linear-gradient(135deg, #52525b 0%, #3b82f6 50%, #6366f1 100%);
+  --theme-user-bubble: #475569;
   --theme-assistant-bubble: rgba(39, 39, 42, 0.92);
   --theme-blur: saturate(110%) blur(16px);
   --theme-app-nav-bg: rgba(9, 9, 11, 0.85);
@@ -186,7 +188,7 @@ html[data-theme='daybreak'] {
   --theme-surface-glass-heavy: rgba(255, 255, 255, 0.94);
   --theme-surface-card: rgba(255, 255, 255, 0.88);
   --theme-surface-card-solid: #ffffff;
-  --theme-user-bubble: linear-gradient(135deg, #0369a1 0%, #1d4ed8 50%, #4338ca 100%);
+  --theme-user-bubble: #2f6feb;
   --theme-assistant-bubble: rgba(255, 255, 255, 0.94);
   --theme-blur: saturate(160%) blur(22px);
   --theme-app-nav-bg: rgba(255, 255, 255, 0.88);
@@ -233,14 +235,7 @@ body,
 }
 
 body {
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: var(--app-font-family);
   color: var(--theme-text);
   background-color: var(--theme-bg-base);
   background-image:

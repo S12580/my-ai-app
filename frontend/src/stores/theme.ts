@@ -11,7 +11,7 @@ function isThemeId(v: string | null): v is ThemeId {
 
 export const useThemeStore = defineStore('theme', {
   state: () => ({
-    themeId: 'aurora' as ThemeId,
+    themeId: 'daybreak' as ThemeId,
   }),
   actions: {
     init() {

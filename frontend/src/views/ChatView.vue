@@ -54,10 +54,43 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  position: relative;
+  overflow: hidden;
   background: var(--theme-main-backdrop);
   backdrop-filter: saturate(130%) blur(14px);
   -webkit-backdrop-filter: saturate(130%) blur(14px);
   box-shadow: var(--theme-main-pane-inset);
+}
+.main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(44% 34% at 16% 14%, color-mix(in srgb, var(--theme-accent) 10%, transparent), transparent 78%),
+    radial-gradient(34% 26% at 82% 10%, color-mix(in srgb, var(--theme-glow-violet) 50%, transparent), transparent 80%),
+    radial-gradient(36% 28% at 70% 88%, color-mix(in srgb, var(--theme-glow-cyan) 55%, transparent), transparent 82%);
+  opacity: 0.45;
+}
+.main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme-text) 8%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(120% 80% at 50% 100%, color-mix(in srgb, var(--theme-bg-base) 18%, transparent), transparent 70%);
+}
+.main > * {
+  position: relative;
+  z-index: 1;
 }
 .toolbar {
   display: flex;

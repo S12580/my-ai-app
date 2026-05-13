@@ -128,6 +128,27 @@ async function onDeleteMessage(id: number) {
   if (!ok) return
   await chat.removeMessage(id)
 }
+
+async function onCopyMessage(m: Message) {
+  const text =
+    m.role === 'user'
+      ? visibleUserText(m)
+      : (m.content ?? '')
+  if (!text.trim()) return
+  try {
+    await navigator.clipboard.writeText(text)
+  } catch {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', 'true')
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+  }
+}
 </script>
 
 <template>
@@ -140,10 +161,11 @@ async function onDeleteMessage(id: number) {
         :class="['bubble', m.role]"
       >
         <div class="bubble-head">
-          <div class="role">{{ m.role === 'user' ? '你' : '助手' }}</div>
+          <div v-if="m.role !== 'user'" class="role">AI 助手</div>
           <div class="menu-wrap">
             <button type="button" class="menu-btn" @click.stop>⋯</button>
             <div class="menu" @click.stop>
+              <button type="button" class="menu-item" @click.stop="onCopyMessage(m)">复制</button>
               <button type="button" class="menu-item danger" @click.stop="onDeleteMessage(m.id)">删除</button>
             </div>
           </div>
@@ -283,8 +305,17 @@ async function onDeleteMessage(id: number) {
   -webkit-backdrop-filter: blur(10px);
 }
 .role {
-  font-size: 12px;
-  opacity: 0.85;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 24%, transparent);
+  color: color-mix(in srgb, var(--theme-text) 88%, var(--theme-accent) 12%);
   margin-bottom: 6px;
 }
 .attach-previews {

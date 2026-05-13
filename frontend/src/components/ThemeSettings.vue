@@ -7,7 +7,7 @@ const open = ref(false)
 const rootRef = ref<HTMLElement | null>(null)
 
 const PRESETS: { id: ThemeId; label: string; hint: string; swatch: string }[] = [
-  { id: 'aurora', label: '极光', hint: '青紫 · 默认', swatch: 'linear-gradient(135deg,#38bdf8,#8b5cf6)' },
+  { id: 'aurora', label: '极光', hint: '青紫 · 经典', swatch: 'linear-gradient(135deg,#38bdf8,#8b5cf6)' },
   { id: 'ember', label: '余烬', hint: '暖橙 · 玫红', swatch: 'linear-gradient(135deg,#fb923c,#e11d48)' },
   { id: 'forest', label: '森野', hint: '翠绿 · 青绿', swatch: 'linear-gradient(135deg,#34d399,#0d9488)' },
   { id: 'midnight', label: '午夜', hint: '冷灰 · 克制', swatch: 'linear-gradient(135deg,#94a3b8,#475569)' },

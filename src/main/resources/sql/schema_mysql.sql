@@ -27,3 +27,28 @@ CREATE TABLE IF NOT EXISTS chat_message (
   KEY idx_chat_message_session_created (session_id, created_at),
   KEY idx_chat_message_session_id (session_id, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS kb_document (
+  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name          VARCHAR(255)    NOT NULL,
+  source_type   VARCHAR(32)     NOT NULL DEFAULT 'upload_local',
+  source_path   VARCHAR(512)    NULL,
+  status        VARCHAR(32)     NOT NULL DEFAULT 'processing',
+  error_message VARCHAR(512)    NULL,
+  created_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_kb_document_status (status),
+  KEY idx_kb_document_updated (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS kb_chunk (
+  id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  document_id    BIGINT UNSIGNED NOT NULL,
+  chunk_index    INT             NOT NULL,
+  chunk_text     MEDIUMTEXT      NOT NULL,
+  embedding_json MEDIUMTEXT      NOT NULL,
+  token_count    INT             NOT NULL DEFAULT 0,
+  created_at     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_kb_chunk_document (document_id, chunk_index),
+  KEY idx_kb_chunk_document_id (document_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

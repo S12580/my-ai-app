@@ -1,5 +1,6 @@
 package com.ai.app.chat.controller;
 
+import com.ai.app.chat.dto.AnalyzedAttachmentPart;
 import com.ai.app.chat.dto.CreateSessionRequest;
 import com.ai.app.chat.dto.MessageResponse;
 import com.ai.app.chat.dto.PageResponse;
@@ -17,7 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
@@ -69,6 +74,21 @@ public class ChatController {
             @RequestParam(required = false) Long beforeId,
             @RequestParam(defaultValue = "500") int limit) {
         return chatService.listMessages(sessionId, beforeId, limit);
+    }
+
+    @GetMapping("/sessions/{sessionId}/messages/{messageId}/attachments/{attachmentId}")
+    public ResponseEntity<Resource> getChatAttachment(
+            @PathVariable("sessionId") long sessionId,
+            @PathVariable("messageId") long messageId,
+            @PathVariable("attachmentId") String attachmentId) {
+        return chatService.serveChatAttachment(sessionId, messageId, attachmentId);
+    }
+
+    @PostMapping(value = "/sessions/{sessionId}/attachments/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<AnalyzedAttachmentPart> analyzeAttachments(
+            @PathVariable("sessionId") Long sessionId,
+            @RequestParam("files") List<MultipartFile> files) {
+        return chatService.analyzeChatAttachments(sessionId, files);
     }
 
     @PostMapping("/sessions/{id}/messages")

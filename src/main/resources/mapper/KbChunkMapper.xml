@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.app.rag.mapper.KbChunkMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO kb_chunk (document_id, chunk_index, chunk_text, embedding_json, token_count)
+        VALUES (#{documentId}, #{chunkIndex}, #{chunkText}, #{embeddingJson}, #{tokenCount})
+    </insert>
+
+    <delete id="deleteByDocumentId">
+        DELETE FROM kb_chunk WHERE document_id = #{documentId}
+    </delete>
+
+    <select id="findByDocumentIds" resultType="com.ai.app.rag.domain.KbChunk">
+        SELECT id,
+               document_id AS documentId,
+               chunk_index AS chunkIndex,
+               chunk_text AS chunkText,
+               embedding_json AS embeddingJson,
+               token_count AS tokenCount,
+               created_at AS createdAt
+        FROM kb_chunk
+        <if test="documentIds != null and documentIds.size() > 0">
+            WHERE document_id IN
+            <foreach collection="documentIds" item="docId" open="(" close=")" separator=",">
+                #{docId}
+            </foreach>
+        </if>
+    </select>
+</mapper>

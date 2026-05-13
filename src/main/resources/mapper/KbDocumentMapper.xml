@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.app.rag.mapper.KbDocumentMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO kb_document (name, source_type, source_path, status, error_message)
+        VALUES (#{name}, #{sourceType}, #{sourcePath}, #{status}, #{errorMessage})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE kb_document
+        SET status = #{status},
+            error_message = #{errorMessage},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateSourcePath">
+        UPDATE kb_document
+        SET source_path = #{sourcePath},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM kb_document WHERE id = #{id}
+    </delete>
+
+    <select id="findIdsByName" resultType="java.lang.Long">
+        SELECT id FROM kb_document WHERE name = #{name} ORDER BY id ASC
+    </select>
+
+    <select id="findById" resultType="com.ai.app.rag.domain.KbDocument">
+        SELECT id,
+               name,
+               source_type AS sourceType,
+               source_path AS sourcePath,
+               status,
+               error_message AS errorMessage,
+               created_at AS createdAt,
+               updated_at AS updatedAt
+        FROM kb_document
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="com.ai.app.rag.domain.KbDocument">
+        SELECT id,
+               name,
+               source_type AS sourceType,
+               source_path AS sourcePath,
+               status,
+               error_message AS errorMessage,
+               created_at AS createdAt,
+               updated_at AS updatedAt
+        FROM kb_document
+        ORDER BY updated_at DESC, id DESC
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM kb_document
+    </select>
+
+    <select id="findPage" resultType="com.ai.app.rag.domain.KbDocument">
+        SELECT id,
+               name,
+               source_type AS sourceType,
+               source_path AS sourcePath,
+               status,
+               error_message AS errorMessage,
+               created_at AS createdAt,
+               updated_at AS updatedAt
+        FROM kb_document
+        ORDER BY updated_at DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findAllIds" resultType="java.lang.Long">
+        SELECT id FROM kb_document ORDER BY id ASC
+    </select>
+</mapper>

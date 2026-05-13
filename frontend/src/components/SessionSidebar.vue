@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useChatStore } from '../stores/chat'
+import { useConfirmStore } from '../stores/confirm'
 
 const chat = useChatStore()
+const confirm = useConfirmStore()
 const menuOpenId = ref<number | null>(null)
 const menuTop = ref(0)
 const menuLeft = ref(0)
@@ -39,7 +41,14 @@ async function renameSession(id: number, currentTitle: string) {
 
 async function removeSession(id: number) {
   menuOpenId.value = null
-  if (!window.confirm('确定删除该会话吗？该操作不可撤销。')) return
+  const ok = await confirm.ask({
+    title: '删除会话',
+    message: '确定删除该会话吗？该操作不可撤销。',
+    confirmText: '删除',
+    cancelText: '取消',
+    danger: true,
+  })
+  if (!ok) return
   await chat.removeSession(id)
 }
 
@@ -106,21 +115,33 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .sidebar {
-  width: 280px;
-  border-right: 1px solid #2f3336;
+  width: 288px;
+  flex-shrink: 0;
+  border-right: var(--theme-pane-divider);
   display: flex;
   flex-direction: column;
-  background: #000;
+  background: var(--theme-surface-glass);
+  backdrop-filter: var(--theme-blur);
+  -webkit-backdrop-filter: var(--theme-blur);
 }
 .new-btn {
-  margin: 12px;
-  padding: 10px 12px;
+  margin: 16px 14px 12px;
+  padding: 11px 16px;
   border-radius: 999px;
   border: none;
-  background: #1d9bf0;
+  background: var(--theme-primary-gradient);
   color: #fff;
   font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
+  box-shadow: 0 4px 18px var(--theme-btn-glow);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.new-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px var(--theme-btn-glow-strong);
 }
 .new-btn:disabled {
   opacity: 0.5;
@@ -128,25 +149,42 @@ onBeforeUnmount(() => {
 .list {
   list-style: none;
   margin: 0;
-  padding: 0 8px 16px;
+  padding: 0 10px 20px;
   overflow-y: auto;
 }
 .item {
-  padding: 12px;
-  border-radius: 12px;
+  padding: 12px 12px 10px;
+  border-radius: var(--theme-radius);
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  border: 1px solid transparent;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.item:not(:last-child) {
+  border-bottom-color: var(--theme-session-divider);
 }
 .item:hover {
-  background: #16181c;
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  border-color: var(--theme-border);
+}
+.item:hover:not(:last-child) {
+  border-bottom-color: var(--theme-session-divider);
 }
 .item.active {
-  background: #16181c;
-  outline: 1px solid #38444d;
+  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
+  border-color: var(--theme-accent-glow);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--theme-accent) 12%, transparent);
+}
+.item.active:not(:last-child) {
+  border-bottom-color: var(--theme-session-divider);
 }
 .item-title {
   display: block;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -163,26 +201,29 @@ onBeforeUnmount(() => {
 .menu-btn {
   border: none;
   background: transparent;
-  color: #9ba1a6;
+  color: var(--theme-text-muted);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
+  border-radius: 6px;
 }
 .menu-btn:hover {
-  color: #e7e9ea;
+  color: var(--theme-text);
+  background: var(--theme-link-hover-bg);
 }
 .menu {
   position: absolute;
   min-width: 88px;
-  background: #0f1419;
-  border: 1px solid #38444d;
-  border-radius: 10px;
+  background: var(--theme-surface-card-solid);
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 12px;
   padding: 6px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   z-index: 10;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 .menu.floating {
   position: fixed;
@@ -199,21 +240,23 @@ onBeforeUnmount(() => {
   border: 0;
   background: transparent;
   text-align: left;
-  color: #d0d5d9;
+  color: var(--theme-text);
   font-size: 12px;
   cursor: pointer;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border-radius: 8px;
 }
 .link-btn:hover {
-  background: #1c232b;
+  background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
 }
 .link-btn.danger:hover {
-  background: #2a1114;
-  color: #f4212e;
+  background: rgba(244, 33, 46, 0.12);
+  color: #f87171;
 }
 .item-time {
-  font-size: 12px;
-  color: #71767b;
+  font-size: 11px;
+  color: var(--theme-text-muted);
+  margin-top: 4px;
+  display: block;
 }
 </style>

@@ -1,0 +1,16 @@
+---
+description: Backend edits — compile so Spring Boot DevTools can auto-restart
+globs: src/main/java/**/*.java,src/main/resources/**/*
+alwaysApply: false
+---
+
+# Spring Boot 本地热重启
+
+本项目已依赖 `spring-boot-devtools`。用 `mvn spring-boot:run` 或 IDE 运行主类时，**classpath 上的 `.class` 更新后会自动快速重启**。
+
+当你修改了 `src/main/java` 或 `src/main/resources` 下的后端代码后：
+
+1. 在仓库根目录执行 **`mvn -q compile`**（若刚改过 `pom.xml` 则用 `mvn -q compile -DskipTests` 亦可），让 `target/classes` 更新，便于 DevTools 检测到变更。
+2. **不要**在未确认端口空闲时再起一个 `spring-boot:run`，避免 8888 占用；若用户未开 DevTools/未在跑应用，只编译即可。
+
+在 IntelliJ 等 IDE 中若开启「自动构建」，保存后编译 + DevTools 即可在无 Agent 介入时自动重启。

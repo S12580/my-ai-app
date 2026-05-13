@@ -8,6 +8,7 @@ public class MessageResponse {
     private Long sessionId;
     private String role;
     private String content;
+    private String metaJson;
     private LocalDateTime createdAt;
 
     public Long getId() {
@@ -40,6 +41,14 @@ public class MessageResponse {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getMetaJson() {
+        return metaJson;
+    }
+
+    public void setMetaJson(String metaJson) {
+        this.metaJson = metaJson;
     }
 
     public LocalDateTime getCreatedAt() {

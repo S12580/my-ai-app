@@ -8,6 +8,7 @@ import Composer from '../components/Composer.vue'
 const chat = useChatStore()
 
 onMounted(async () => {
+  await chat.loadRagDocuments()
   await chat.refreshSessions()
   if (chat.sessions.length === 0) {
     await chat.createSession()
@@ -23,10 +24,16 @@ onMounted(async () => {
     <main class="main">
       <header class="toolbar">
         <span class="title">{{ chat.currentSession?.title || '新会话' }}</span>
-        <label class="stream-toggle">
-          <input type="checkbox" v-model="chat.streamMode" :disabled="chat.sending" />
-          流式输出
-        </label>
+        <div class="toolbar-right">
+          <label class="stream-toggle">
+            <input type="checkbox" v-model="chat.ragMode" />
+            RAG 模式
+          </label>
+          <label class="stream-toggle">
+            <input type="checkbox" v-model="chat.streamMode" />
+            流式输出
+          </label>
+        </div>
       </header>
       <MessageList />
       <Composer />
@@ -37,9 +44,9 @@ onMounted(async () => {
 <style scoped>
 .layout {
   display: flex;
-  height: 100vh;
-  background: #0f1419;
-  color: #e7e9ea;
+  height: calc(100vh - var(--theme-nav-h));
+  background: transparent;
+  color: var(--theme-text);
   font-family: system-ui, sans-serif;
 }
 .main {
@@ -47,22 +54,39 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  background: var(--theme-main-backdrop);
+  backdrop-filter: saturate(130%) blur(14px);
+  -webkit-backdrop-filter: saturate(130%) blur(14px);
+  box-shadow: var(--theme-main-pane-inset);
 }
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid #2f3336;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-toolbar-bg);
 }
 .title {
   font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
 }
 .stream-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #71767b;
+  font-size: 13px;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.stream-toggle input {
+  accent-color: var(--theme-accent);
+}
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 </style>

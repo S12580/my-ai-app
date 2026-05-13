@@ -4,11 +4,252 @@
   box-sizing: border-box;
 }
 
+:root {
+  --theme-bg-base: #070b14;
+  --theme-bg-mid: #0f172a;
+  --theme-bg-top: #0c1224;
+  --theme-glow-cyan: rgba(34, 211, 238, 0.12);
+  --theme-glow-sky: rgba(56, 189, 248, 0.2);
+  --theme-glow-violet: rgba(139, 92, 246, 0.14);
+  --theme-text: #e8edf5;
+  --theme-text-muted: #94a3b8;
+  --theme-border: rgba(148, 163, 184, 0.12);
+  --theme-border-strong: rgba(148, 163, 184, 0.22);
+  --theme-accent: #38bdf8;
+  --theme-accent-soft: rgba(56, 189, 248, 0.18);
+  --theme-accent-glow: rgba(56, 189, 248, 0.25);
+  --theme-surface-glass: rgba(15, 23, 42, 0.52);
+  --theme-surface-glass-heavy: rgba(15, 23, 42, 0.78);
+  --theme-surface-card: rgba(30, 41, 59, 0.55);
+  --theme-surface-card-solid: rgba(30, 41, 59, 0.9);
+  --theme-user-bubble: linear-gradient(135deg, #0369a1 0%, #4f46e5 55%, #6366f1 100%);
+  --theme-assistant-bubble: rgba(30, 41, 59, 0.82);
+  --theme-blur: saturate(140%) blur(18px);
+  --theme-radius: 14px;
+  --theme-nav-h: 52px;
+  --theme-app-nav-bg: rgba(7, 11, 20, 0.72);
+  --theme-main-backdrop: rgba(15, 23, 42, 0.28);
+  --theme-toolbar-bg: rgba(7, 11, 20, 0.35);
+  --theme-composer-bg: rgba(7, 11, 20, 0.45);
+  --theme-lightbox-bg: rgba(7, 11, 20, 0.88);
+  --theme-table-head-bg: rgba(7, 11, 20, 0.35);
+  --theme-control-fill: rgba(15, 23, 42, 0.6);
+  --theme-primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+  --theme-link-hover-bg: rgba(148, 163, 184, 0.08);
+  --theme-btn-glow: rgba(56, 189, 248, 0.28);
+  --theme-btn-glow-strong: rgba(99, 102, 241, 0.35);
+  --theme-pane-divider: 2px solid rgba(148, 163, 184, 0.5);
+  --theme-main-pane-inset: inset 1px 0 0 rgba(255, 255, 255, 0.12);
+  --theme-session-divider: rgba(148, 163, 184, 0.22);
+  /* 知识库文档状态徽章（暗色底上偏亮字） */
+  --kb-status-ready-bg: rgba(16, 185, 129, 0.14);
+  --kb-status-ready-fg: #6ee7b7;
+  --kb-status-ready-border: rgba(52, 211, 153, 0.42);
+  --kb-status-failed-bg: rgba(248, 113, 113, 0.12);
+  --kb-status-failed-fg: #fca5a5;
+  --kb-status-failed-border: rgba(248, 113, 113, 0.42);
+  --kb-status-processing-bg: rgba(251, 191, 36, 0.12);
+  --kb-status-processing-fg: #fde047;
+  --kb-status-processing-border: rgba(250, 204, 21, 0.45);
+  --kb-status-unknown-bg: rgba(148, 163, 184, 0.12);
+  --kb-status-unknown-fg: #cbd5e1;
+  --kb-status-unknown-border: rgba(148, 163, 184, 0.35);
+}
+
+html[data-theme='ember'] {
+  --theme-bg-base: #0d0809;
+  --theme-bg-mid: #160f11;
+  --theme-bg-top: #11090b;
+  --theme-glow-cyan: rgba(253, 186, 116, 0.1);
+  --theme-glow-sky: rgba(249, 115, 22, 0.2);
+  --theme-glow-violet: rgba(225, 29, 72, 0.14);
+  --theme-text: #faf1ef;
+  --theme-text-muted: #b8a099;
+  --theme-border: rgba(251, 113, 133, 0.1);
+  --theme-border-strong: rgba(251, 113, 133, 0.2);
+  --theme-accent: #fb923c;
+  --theme-accent-soft: rgba(251, 146, 60, 0.22);
+  --theme-accent-glow: rgba(251, 146, 60, 0.38);
+  --theme-surface-glass: rgba(55, 28, 32, 0.52);
+  --theme-surface-glass-heavy: rgba(50, 26, 30, 0.8);
+  --theme-surface-card: rgba(62, 32, 38, 0.58);
+  --theme-surface-card-solid: rgba(48, 26, 30, 0.94);
+  --theme-user-bubble: linear-gradient(135deg, #9a3412 0%, #9f1239 55%, #db2777 100%);
+  --theme-assistant-bubble: rgba(58, 30, 36, 0.88);
+  --theme-blur: saturate(125%) blur(18px);
+  --theme-app-nav-bg: rgba(20, 10, 12, 0.82);
+  --theme-main-backdrop: rgba(42, 24, 28, 0.38);
+  --theme-toolbar-bg: rgba(28, 14, 16, 0.5);
+  --theme-composer-bg: rgba(22, 12, 14, 0.55);
+  --theme-lightbox-bg: rgba(12, 6, 8, 0.9);
+  --theme-table-head-bg: rgba(28, 14, 16, 0.55);
+  --theme-control-fill: rgba(55, 28, 34, 0.72);
+  --theme-primary-gradient: linear-gradient(135deg, #f97316 0%, #e11d48 100%);
+  --theme-link-hover-bg: rgba(251, 146, 60, 0.12);
+  --theme-btn-glow: rgba(249, 115, 22, 0.32);
+  --theme-btn-glow-strong: rgba(225, 29, 72, 0.38);
+  --theme-pane-divider: 2px solid rgba(251, 180, 160, 0.45);
+  --theme-main-pane-inset: inset 1px 0 0 rgba(255, 255, 255, 0.1);
+  --theme-session-divider: rgba(251, 200, 190, 0.28);
+}
+
+html[data-theme='forest'] {
+  --theme-bg-base: #051210;
+  --theme-bg-mid: #0a1f1a;
+  --theme-bg-top: #071814;
+  --theme-glow-cyan: rgba(52, 211, 153, 0.12);
+  --theme-glow-sky: rgba(16, 185, 129, 0.18);
+  --theme-glow-violet: rgba(45, 212, 191, 0.12);
+  --theme-text: #e8f5f0;
+  --theme-text-muted: #8fb3a8;
+  --theme-border: rgba(45, 212, 191, 0.1);
+  --theme-border-strong: rgba(52, 211, 153, 0.2);
+  --theme-accent: #34d399;
+  --theme-accent-soft: rgba(52, 211, 153, 0.2);
+  --theme-accent-glow: rgba(16, 185, 129, 0.32);
+  --theme-surface-glass: rgba(12, 40, 34, 0.5);
+  --theme-surface-glass-heavy: rgba(10, 48, 40, 0.82);
+  --theme-surface-card: rgba(15, 55, 46, 0.55);
+  --theme-surface-card-solid: rgba(12, 52, 44, 0.92);
+  --theme-user-bubble: linear-gradient(135deg, #047857 0%, #0f766e 45%, #0d9488 100%);
+  --theme-assistant-bubble: rgba(15, 55, 46, 0.85);
+  --theme-blur: saturate(135%) blur(18px);
+  --theme-app-nav-bg: rgba(6, 22, 18, 0.78);
+  --theme-main-backdrop: rgba(10, 42, 36, 0.32);
+  --theme-toolbar-bg: rgba(6, 28, 24, 0.45);
+  --theme-composer-bg: rgba(5, 26, 22, 0.52);
+  --theme-lightbox-bg: rgba(3, 18, 14, 0.9);
+  --theme-table-head-bg: rgba(5, 32, 27, 0.55);
+  --theme-control-fill: rgba(12, 50, 42, 0.7);
+  --theme-primary-gradient: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+  --theme-link-hover-bg: rgba(52, 211, 153, 0.1);
+  --theme-btn-glow: rgba(16, 185, 129, 0.3);
+  --theme-btn-glow-strong: rgba(13, 148, 136, 0.38);
+  --theme-pane-divider: 2px solid rgba(52, 211, 153, 0.4);
+  --theme-main-pane-inset: inset 1px 0 0 rgba(255, 255, 255, 0.1);
+  --theme-session-divider: rgba(110, 231, 183, 0.22);
+}
+
+html[data-theme='midnight'] {
+  --theme-bg-base: #09090b;
+  --theme-bg-mid: #18181b;
+  --theme-bg-top: #0c0c0f;
+  --theme-glow-cyan: rgba(113, 113, 122, 0.08);
+  --theme-glow-sky: rgba(96, 165, 250, 0.12);
+  --theme-glow-violet: rgba(129, 140, 248, 0.1);
+  --theme-text: #f4f4f5;
+  --theme-text-muted: #a1a1aa;
+  --theme-border: rgba(228, 228, 231, 0.08);
+  --theme-border-strong: rgba(228, 228, 231, 0.16);
+  --theme-accent: #93c5fd;
+  --theme-accent-soft: rgba(147, 197, 253, 0.15);
+  --theme-accent-glow: rgba(147, 197, 253, 0.28);
+  --theme-surface-glass: rgba(24, 24, 27, 0.65);
+  --theme-surface-glass-heavy: rgba(24, 24, 27, 0.88);
+  --theme-surface-card: rgba(39, 39, 42, 0.72);
+  --theme-surface-card-solid: rgba(39, 39, 42, 0.95);
+  --theme-user-bubble: linear-gradient(135deg, #52525b 0%, #3b82f6 50%, #6366f1 100%);
+  --theme-assistant-bubble: rgba(39, 39, 42, 0.92);
+  --theme-blur: saturate(110%) blur(16px);
+  --theme-app-nav-bg: rgba(9, 9, 11, 0.85);
+  --theme-main-backdrop: rgba(24, 24, 27, 0.4);
+  --theme-toolbar-bg: rgba(9, 9, 11, 0.55);
+  --theme-composer-bg: rgba(9, 9, 11, 0.58);
+  --theme-lightbox-bg: rgba(0, 0, 0, 0.88);
+  --theme-table-head-bg: rgba(9, 9, 11, 0.6);
+  --theme-control-fill: rgba(39, 39, 42, 0.8);
+  --theme-primary-gradient: linear-gradient(135deg, #71717a 0%, #3b82f6 100%);
+  --theme-link-hover-bg: rgba(244, 244, 245, 0.06);
+  --theme-btn-glow: rgba(59, 130, 246, 0.25);
+  --theme-btn-glow-strong: rgba(99, 102, 241, 0.35);
+  --theme-pane-divider: 2px solid rgba(228, 228, 231, 0.28);
+  --theme-main-pane-inset: inset 1px 0 0 rgba(255, 255, 255, 0.12);
+  --theme-session-divider: rgba(228, 228, 231, 0.14);
+}
+
+/** 浅色：云光 */
+html[data-theme='daybreak'] {
+  --theme-bg-base: #e2e9f2;
+  --theme-bg-mid: #d4dee9;
+  --theme-bg-top: #f5f8fc;
+  --theme-glow-cyan: rgba(56, 189, 248, 0.22);
+  --theme-glow-sky: rgba(99, 102, 241, 0.16);
+  --theme-glow-violet: rgba(244, 114, 182, 0.12);
+  --theme-text: #0f172a;
+  --theme-text-muted: #64748b;
+  --theme-border: rgba(15, 23, 42, 0.09);
+  --theme-border-strong: rgba(15, 23, 42, 0.16);
+  --theme-accent: #0284c7;
+  --theme-accent-soft: rgba(2, 132, 199, 0.14);
+  --theme-accent-glow: rgba(2, 132, 199, 0.32);
+  --theme-surface-glass: rgba(255, 255, 255, 0.78);
+  --theme-surface-glass-heavy: rgba(255, 255, 255, 0.94);
+  --theme-surface-card: rgba(255, 255, 255, 0.88);
+  --theme-surface-card-solid: #ffffff;
+  --theme-user-bubble: linear-gradient(135deg, #0369a1 0%, #1d4ed8 50%, #4338ca 100%);
+  --theme-assistant-bubble: rgba(255, 255, 255, 0.94);
+  --theme-blur: saturate(160%) blur(22px);
+  --theme-app-nav-bg: rgba(255, 255, 255, 0.88);
+  --theme-main-backdrop: rgba(248, 250, 252, 0.62);
+  --theme-toolbar-bg: rgba(255, 255, 255, 0.82);
+  --theme-composer-bg: rgba(255, 255, 255, 0.78);
+  --theme-lightbox-bg: rgba(15, 23, 42, 0.78);
+  --theme-table-head-bg: rgba(241, 245, 249, 0.98);
+  --theme-control-fill: rgba(241, 245, 249, 0.98);
+  --theme-primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  --theme-link-hover-bg: rgba(2, 132, 199, 0.1);
+  --theme-btn-glow: rgba(14, 165, 233, 0.28);
+  --theme-btn-glow-strong: rgba(37, 99, 235, 0.32);
+  --theme-pane-divider: 2px solid rgba(15, 23, 42, 0.16);
+  --theme-main-pane-inset: inset 1px 0 0 rgba(255, 255, 255, 0.98);
+  --theme-session-divider: rgba(15, 23, 42, 0.1);
+  --kb-status-ready-fg: #047857;
+  --kb-status-ready-bg: rgba(16, 185, 129, 0.16);
+  --kb-status-ready-border: rgba(5, 150, 105, 0.35);
+  --kb-status-failed-fg: #b91c1c;
+  --kb-status-failed-bg: rgba(248, 113, 113, 0.14);
+  --kb-status-failed-border: rgba(220, 38, 38, 0.28);
+  --kb-status-processing-fg: #a16207;
+  --kb-status-processing-bg: rgba(250, 204, 21, 0.18);
+  --kb-status-processing-border: rgba(202, 138, 4, 0.35);
+  --kb-status-unknown-fg: #475569;
+  --kb-status-unknown-bg: rgba(148, 163, 184, 0.2);
+  --kb-status-unknown-border: rgba(100, 116, 139, 0.35);
+}
+
+html {
+  color-scheme: dark;
+}
+
+html[data-theme='daybreak'] {
+  color-scheme: light;
+}
+
 html,
 body,
 #app {
   margin: 0;
   height: 100%;
+}
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  color: var(--theme-text);
+  background-color: var(--theme-bg-base);
+  background-image:
+    radial-gradient(ellipse 120% 90% at 0% -15%, var(--theme-glow-sky), transparent 52%),
+    radial-gradient(ellipse 90% 70% at 100% 0%, var(--theme-glow-violet), transparent 48%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, var(--theme-glow-cyan), transparent 42%),
+    linear-gradient(168deg, var(--theme-bg-top) 0%, var(--theme-bg-mid) 42%, var(--theme-bg-base) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
 }
 
 #app {

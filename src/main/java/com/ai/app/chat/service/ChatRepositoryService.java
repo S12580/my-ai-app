@@ -20,19 +20,30 @@ public class ChatRepositoryService {
 
     @Transactional
     public ChatMessage insertUserMessage(Long sessionId, String content) {
-        return insertUserBody(sessionId, content);
+        return insertUserBody(sessionId, content, null);
+    }
+
+    @Transactional
+    public ChatMessage insertUserMessage(Long sessionId, String content, String metaJson) {
+        return insertUserBody(sessionId, content, metaJson);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ChatMessage insertUserMessageNewTx(Long sessionId, String content) {
-        return insertUserBody(sessionId, content);
+        return insertUserBody(sessionId, content, null);
     }
 
-    private ChatMessage insertUserBody(Long sessionId, String content) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ChatMessage insertUserMessageNewTx(Long sessionId, String content, String metaJson) {
+        return insertUserBody(sessionId, content, metaJson);
+    }
+
+    private ChatMessage insertUserBody(Long sessionId, String content, String metaJson) {
         ChatMessage m = new ChatMessage();
         m.setSessionId(sessionId);
         m.setRole("user");
         m.setContent(content);
+        m.setMetaJson(metaJson);
         chatMessageMapper.insert(m);
         chatSessionMapper.touchUpdatedAt(sessionId);
         return m;

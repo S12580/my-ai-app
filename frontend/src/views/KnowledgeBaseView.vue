@@ -179,14 +179,17 @@ async function onDelete(id: number, name: string) {
       <table class="table">
         <thead>
           <tr>
+            <th class="col-index">序号</th>
             <th class="col-name">名称</th>
             <th class="col-status">状态</th>
+            <th class="col-time">创建时间</th>
             <th class="col-time">更新时间</th>
-            <th class="col-actions" />
+            <th class="col-actions">操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="d in docs" :key="d.id">
+          <tr v-for="(d, idx) in docs" :key="d.id">
+            <td class="col-index muted">{{ page * pageSize + idx + 1 }}</td>
             <td class="col-name cell-name">{{ d.name }}</td>
             <td class="col-status">
               <div class="status-stack">
@@ -194,6 +197,7 @@ async function onDelete(id: number, name: string) {
                 <span v-if="d.errorMessage" class="err">{{ d.errorMessage }}</span>
               </div>
             </td>
+            <td class="col-time muted">{{ d.createdAt }}</td>
             <td class="col-time muted">{{ d.updatedAt }}</td>
             <td class="col-actions">
               <button type="button" class="btn-del" @click="onDelete(d.id, d.name)">删除</button>
@@ -211,9 +215,9 @@ async function onDelete(id: number, name: string) {
           <label class="page-size-label">
             每页
             <select v-model.number="pageSize" class="page-size-select" @change="onPageSizeChange">
+              <option :value="5">5</option>
               <option :value="10">10</option>
               <option :value="20">20</option>
-              <option :value="50">50</option>
             </select>
             条
           </label>
@@ -416,10 +420,14 @@ async function onDelete(id: number, name: string) {
 }
 .table th,
 .table td {
-  text-align: left;
+  text-align: center;
   padding: 14px 16px;
   border-bottom: 1px solid var(--theme-border);
   vertical-align: top;
+}
+.table th:not(:last-child),
+.table td:not(:last-child) {
+  border-right: 1px solid color-mix(in srgb, var(--theme-border-strong) 55%, transparent);
 }
 .table th {
   color: var(--theme-text-muted);
@@ -435,20 +443,36 @@ async function onDelete(id: number, name: string) {
 .table tbody tr:last-child td {
   border-bottom: none;
 }
+.col-index {
+  width: 5%;
+  min-width: 30px;
+  white-space: nowrap;
+  text-align: center;
+}
 .col-name {
-  width: 36%;
+  width: 29%;
+  text-align: center;
 }
 .col-status {
-  width: 28%;
+  width: 18%;
+  text-align: center;
 }
 .col-time {
-  width: 24%;
+  width: 19%;
   white-space: nowrap;
+  text-align: center;
 }
 .col-actions {
   width: 12%;
-  text-align: right;
+  text-align: center;
   white-space: nowrap;
+}
+.table td.col-index,
+.table td.col-name,
+.table td.col-status,
+.table td.col-time,
+.table td.col-actions {
+  text-align: center;
 }
 .cell-name {
   font-weight: 500;
@@ -458,7 +482,7 @@ async function onDelete(id: number, name: string) {
 .status-stack {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 6px;
 }
 .badge {
@@ -593,4 +617,3 @@ async function onDelete(id: number, name: string) {
   cursor: not-allowed;
 }
 </style>
-

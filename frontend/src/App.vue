@@ -7,7 +7,7 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
 <template>
   <div class="app-root">
     <nav class="app-nav">
-      <RouterLink class="nav-link" to="/">鑱婂ぉ</RouterLink>
+      <RouterLink class="nav-link" to="/">会话列表</RouterLink>
       <RouterLink class="nav-link" to="/knowledge">知识库管理</RouterLink>
     </nav>
     <RouterView />

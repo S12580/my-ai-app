@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
   outline: none;
 }
 .message-box textarea::placeholder {
-  color: var(--theme-text-muted);
+  color: #a1a1aa;
 }
 .message-box-footer {
   display: flex;

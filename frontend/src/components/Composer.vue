@@ -78,6 +78,10 @@ function clearPendingFiles() {
   pendingChatFiles.value = []
 }
 
+function removePendingAt(index: number) {
+  pendingChatFiles.value = pendingChatFiles.value.filter((_, i) => i !== index)
+}
+
 function openImagePicker() {
   imageAttachInput.value?.click()
 }
@@ -147,6 +151,33 @@ onBeforeUnmount(() => {
         @click="syncTextareaSelection"
         @keyup="syncTextareaSelection"
       />
+      <div v-if="pendingChatFiles.length" class="pending-attachments">
+        <div class="pending-one-line">
+          <div class="pending-chips-scroll" aria-label="待发送附件文件名">
+            <template v-for="(file, index) in pendingChatFiles" :key="fileKey(file) + '-' + index">
+              <span class="pending-file-chip">
+                <span class="pending-file-chip-name" :title="file.name">{{ file.name }}</span>
+                <button
+                  type="button"
+                  class="pending-file-remove"
+                  :title="'移除「' + file.name + '」'"
+                  :aria-label="'移除附件 ' + file.name"
+                  @click="removePendingAt(index)"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </span>
+              <span v-if="index < pendingChatFiles.length - 1" class="pending-chip-sep" aria-hidden="true">·</span>
+            </template>
+          </div>
+          <div class="pending-tail">
+            <span class="pending-count">{{ pendingChatFiles.length }}/{{ MAX_CHAT_ATTACHMENTS_PER_MESSAGE }}</span>
+            <button type="button" class="pending-clear-all" aria-label="移除全部附件" @click="clearPendingFiles">
+              全部清除
+            </button>
+          </div>
+        </div>
+      </div>
       <div class="message-box-footer">
         <div class="footer-start">
           <input
@@ -248,10 +279,6 @@ onBeforeUnmount(() => {
               </button>
             </div>
           </div>
-          <span v-if="pendingChatFiles.length" class="pending">
-            已选 {{ pendingChatFiles.length }} / {{ MAX_CHAT_ATTACHMENTS_PER_MESSAGE }} 个
-            <button type="button" class="clear" @click="clearPendingFiles">清除</button>
-          </span>
         </div>
         <button
           type="button"
@@ -323,6 +350,119 @@ onBeforeUnmount(() => {
 }
 .message-box textarea::placeholder {
   color: #a1a1aa;
+}
+.pending-attachments {
+  flex-shrink: 0;
+  padding: 4px 10px 6px;
+  border-top: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent);
+}
+.pending-one-line {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+}
+.pending-chips-scroll {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 2px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--theme-text-muted) 45%, transparent) transparent;
+}
+.pending-chips-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.pending-chips-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-text-muted) 40%, transparent);
+}
+.pending-file-chip {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  max-width: min(220px, 55vw);
+  min-width: 0;
+}
+.pending-file-chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--theme-text);
+}
+.pending-chip-sep {
+  flex-shrink: 0;
+  color: var(--theme-text-muted);
+  font-size: 12px;
+  padding: 0 1px;
+  user-select: none;
+}
+.pending-file-remove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--theme-text-muted);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pending-file-remove:hover {
+  background: color-mix(in srgb, var(--theme-text) 12%, transparent);
+  color: var(--theme-text);
+}
+.pending-tail {
+  flex-shrink: 0;
+  margin-left: auto;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--theme-text-muted);
+  white-space: nowrap;
+  padding-left: 4px;
+}
+.pending-count {
+  font-variant-numeric: tabular-nums;
+}
+.pending-clear-all {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--theme-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.pending-clear-all:hover {
+  color: var(--theme-text);
 }
 .message-box-footer {
   display: flex;
@@ -439,19 +579,6 @@ onBeforeUnmount(() => {
   line-height: 1.35;
   flex: 1 1 auto;
   min-width: 140px;
-}
-.pending {
-  font-size: 12px;
-  color: var(--theme-accent);
-}
-.clear {
-  margin-left: 6px;
-  background: none;
-  border: none;
-  color: #f4212e;
-  cursor: pointer;
-  font-size: 12px;
-  text-decoration: underline;
 }
 .send {
   flex-shrink: 0;
